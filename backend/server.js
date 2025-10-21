@@ -1,15 +1,13 @@
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
+import { connectPrisma } from "./config/prisma.js";
+import { connectMongoose } from "./config/mongoose.js";
 
-dotenv.config();
 const app = express();
-
-app.use(cors());
 app.use(express.json());
 
-// health check
-app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+await connectPrisma();
+await connectMongoose();
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get("/", (req, res) => res.send("Backend running with MySQL + MongoDB"));
+
+app.listen(8000, () => console.log("Server running on port 8000"));
