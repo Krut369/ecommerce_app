@@ -6,6 +6,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model users {
   id           Int      @id @default(autoincrement())
   name         String
@@ -14,6 +15,7 @@ model users {
   role         String   @default("customer")
   orders       orders[]
 }
+
 model orders {
   id        Int           @id @default(autoincrement())
   userId    Int
@@ -21,7 +23,10 @@ model orders {
   createdAt DateTime       @default(now())
   user      users          @relation(fields: [userId], references: [id])
   items     order_items[]
+
+  @@index([createdAt])
 }
+
 model order_items {
   id              Int       @id @default(autoincrement())
   orderId         Int

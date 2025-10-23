@@ -4,12 +4,14 @@ import { connectMongoose } from "./config/mongoose.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 const app = express();
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reports", reportRoutes);
 
 await connectPrisma();
 await connectMongoose();

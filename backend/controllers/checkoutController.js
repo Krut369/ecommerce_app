@@ -1,24 +1,15 @@
 import { prisma } from "../config/prisma.js";
 import Product from "../models/Product.js";
 
-/**
- * Expected request body:
- * [
- *   { "productId": "652a...", "quantity": 2 },
- *   { "productId": "652b...", "quantity": 1 }
- * ]
- */
 export const checkout = async (req, res) => {
   try {
     const items = req.body;
     if (!Array.isArray(items) || items.length === 0)
       return res.status(400).json({ error: "No items provided" });
 
-    // fetch products from Mongo
     const ids = items.map(i => i.productId);
     const products = await Product.find({ _id: { $in: ids } });
 
-    // build order_items array with priceAtPurchase
     let total = 0;
     const orderItems = [];
     for (const i of items) {
@@ -36,7 +27,6 @@ export const checkout = async (req, res) => {
     if (orderItems.length === 0)
       return res.status(400).json({ error: "No valid products" });
 
-    // create order + order_items inside one transaction
     const order = await prisma.$transaction(async tx => {
       const newOrder = await tx.orders.create({
         data: {
